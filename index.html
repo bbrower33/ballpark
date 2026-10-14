@@ -30,10 +30,23 @@
     </section>
 
     <section id="end" hidden>
+      <h2 id="end-title"></h2>
       <p id="total"></p>
       <pre id="share"></pre>
       <button id="copy" type="button">Copy result</button>
       <button id="again" type="button">Play a random game</button>
+    </section>
+
+    <section id="archive" aria-labelledby="archive-title">
+      <h2 id="archive-title">Archive</h2>
+      <p id="stats"></p>
+      <p class="archive-note">Each daily challenge can be played once on this browser.</p>
+      <div id="archive-list" class="archive-list"></div>
+      <form id="archive-form" class="archive-form">
+        <label for="archive-date">Choose an older day</label>
+        <input id="archive-date" type="date" required>
+        <button type="submit">Open day</button>
+      </form>
     </section>
 
     <p id="error" role="alert" hidden></p>

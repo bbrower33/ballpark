@@ -21,7 +21,7 @@ body {
   margin: 0;
   font: 18px/1.5 "Iowan Old Style", "Palatino Linotype", Georgia, serif;
 }
-main { max-width: 34rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+main { max-width: 38rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
 h1 { margin: 0; font-size: 1.1rem; font-weight: 600; letter-spacing: .02em; }
 header { border-bottom: 1px solid var(--line); padding-bottom: .75rem; margin-bottom: 2rem; }
 #meta, #progress, footer { color: var(--muted); font-size: .9rem; margin: .1rem 0 0; }
@@ -51,8 +51,32 @@ button#copy, button#again { background: transparent; color: var(--ink); border: 
 .bad { color: var(--bad) !important; }
 
 #total { font-size: 2.4rem; margin: 0 0 .5rem; }
+#end-title { margin-bottom: .4rem; }
 #share { font: 1.4rem/1.5 system-ui, sans-serif; margin: 0 0 1.25rem; white-space: pre-wrap; }
 #error { color: var(--bad); }
+#archive { margin-top: 3rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
+#archive h2 { font-size: 1.25rem; margin: 0; }
+#stats, .archive-note { color: var(--muted); font-size: .9rem; margin: .15rem 0 .8rem; }
+.archive-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; }
+button.archive-day {
+  overflow: hidden; padding: .45rem .6rem; text-align: left; white-space: nowrap;
+  text-overflow: ellipsis; background: transparent; color: var(--ink); border: 1px solid var(--line);
+}
+button.archive-day[aria-current="true"] { border-color: var(--accent); }
+.archive-form { margin-top: 1rem; align-items: end; }
+.archive-form label { width: 100%; color: var(--muted); font-size: .9rem; }
+.archive-form input { width: auto; font-size: 1rem; }
 footer { margin-top: 3rem; border-top: 1px solid var(--line); padding-top: .75rem; }
 a { color: inherit; }
+.author-page main { max-width: 46rem; }
+.author-page label { display: block; color: var(--muted); font-size: .9rem; }
+.author-page fieldset { margin: 1rem 0; padding: 1rem; border: 1px solid var(--line); border-radius: 4px; }
+.author-page legend { padding: 0 .4rem; }
+.author-page select { font: inherit; padding: .45rem; color: var(--ink); background: var(--bg); border: 2px solid var(--line); }
+.city-fields { display: grid; gap: .6rem; margin-top: .7rem; }
+.city-fields input { width: 100%; font-size: 1rem; }
+.button-link { display: inline-block; padding: .55rem 1rem; color: var(--accent-ink); background: var(--accent); border-radius: 4px; text-decoration: none; }
+#schedule-output { margin-top: 2rem; }
+#schedule-preview { max-height: 24rem; overflow: auto; padding: 1rem; background: color-mix(in srgb, var(--line) 25%, transparent); font-size: .8rem; }
 @media (prefers-reduced-motion: no-preference) { button { transition: filter .1s; } button:hover { filter: brightness(1.1); } }
+@media (min-width: 34rem) { .archive-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

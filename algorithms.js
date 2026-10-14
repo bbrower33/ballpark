@@ -147,6 +147,52 @@ export const makeCoastRound = (cities, rng) =>
     (c) => `How far is ${c.label} from the nearest ocean coast, in km?`
   );
 
+function cityByLabel(cities, label) {
+  const city = cities.find((candidate) => candidate.label === label);
+  if (!city) throw new Error(`Scheduled city not found: ${label}`);
+  return city;
+}
+
+// Scheduled rounds use city labels, keeping schedule.json compact and editable.
+export function makeScheduledGame(cities, specs) {
+  if (!Array.isArray(specs) || specs.length !== 5) {
+    throw new Error("A scheduled day must contain exactly five rounds");
+  }
+  return specs.map((spec) => {
+    if (spec.mode === "distance") {
+      const a = cityByLabel(cities, spec.a);
+      const b = cityByLabel(cities, spec.b);
+      if (a === b) throw new Error("A distance round needs two different cities");
+      return {
+        mode: "distance", a, b,
+        prompt: `How far is ${a.label} from ${b.label}?`,
+        answer: haversineKm(a.lat, a.lon, b.lat, b.lon),
+      };
+    }
+    if (spec.mode === "coast") {
+      const city = cityByLabel(cities, spec.city);
+      if (city.coastKm == null) throw new Error(`No coast distance for ${city.label}`);
+      return {
+        mode: "coast", city,
+        prompt: `How far is ${city.label} from the nearest ocean coast, in km?`,
+        answer: city.coastKm,
+      };
+    }
+    if (spec.mode === "elevation") {
+      const city = cityByLabel(cities, spec.city);
+      if (city.elev == null || city.elev <= -90) {
+        throw new Error(`No usable elevation for ${city.label}`);
+      }
+      return {
+        mode: "elevation", city,
+        prompt: `What is the elevation of ${city.label}, in meters above sea level?`,
+        answer: city.elev,
+      };
+    }
+    throw new Error(`Unknown scheduled mode: ${spec.mode}`);
+  });
+}
+
 const ROUND_MAKERS = {
   distance: makeDistanceRound,
   coast: makeCoastRound,

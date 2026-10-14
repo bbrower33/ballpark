@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ballpark schedule editor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="author-page">
+  <main>
+    <header>
+      <h1>Ballpark schedule editor</h1>
+      <p>Create a curated five-round day with city autocomplete.</p>
+    </header>
+
+    <form id="schedule-form">
+      <label for="schedule-date">UTC date</label>
+      <input id="schedule-date" type="date" required>
+      <div id="round-editors"></div>
+      <button type="submit">Add day to schedule</button>
+    </form>
+
+    <section id="schedule-output" hidden>
+      <h2>Schedule ready</h2>
+      <p>Replace the project’s <code>schedule.json</code> with this downloaded file.</p>
+      <a id="download-schedule" class="button-link" download="schedule.json">Download schedule.json</a>
+      <pre id="schedule-preview"></pre>
+    </section>
+
+    <datalist id="city-options"></datalist>
+    <p id="error" role="alert" hidden></p>
+  </main>
+  <script type="module" src="author.js"></script>
+</body>
+</html>
