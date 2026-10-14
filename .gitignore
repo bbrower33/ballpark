@@ -1,5 +1,7 @@
 cities.json
 cities15000.txt
-/processing
+/processing/*
+!/processing/preprocess.py
 /.venv
 algorithm.js
+ne_10m_coastline/
