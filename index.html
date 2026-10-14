@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ballpark – guess the distance</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Ballpark</h1>
+      <p id="meta"></p>
+    </header>
+
+    <section id="game" hidden>
+      <p id="progress"></p>
+      <h2 id="prompt"></h2>
+      <form id="guess-form" autocomplete="off">
+        <input id="guess" type="text" inputmode="decimal" aria-label="Your guess" required>
+        <span id="unit"></span>
+        <button type="submit">Lock in guess</button>
+      </form>
+
+      <div id="result" hidden>
+        <p id="answer"></p>
+        <p id="detail"></p>
+        <button id="next" type="button"></button>
+      </div>
+    </section>
+
+    <section id="end" hidden>
+      <p id="total"></p>
+      <pre id="share"></pre>
+      <button id="copy" type="button">Copy result</button>
+      <button id="again" type="button">Play a random game</button>
+    </section>
+
+    <p id="error" role="alert" hidden></p>
+    <footer>City data: <a href="https://www.geonames.org/">GeoNames</a> (CC BY 4.0). Coastline: Natural Earth.</footer>
+  </main>
+  <script type="module" src="index.js"></script>
+</body>
+</html>
