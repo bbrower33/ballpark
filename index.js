@@ -9,6 +9,11 @@ import {
 const TITLE = "Ballpark";
 const ARCHIVE_START = "2026-01-01";
 const ARCHIVE_DAYS_SHOWN = 14;
+const MODE_LABELS = {
+  distance: "City to city",
+  coast: "Nearest coast",
+  elevation: "Elevation",
+};
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => Math.round(n).toLocaleString();
 
@@ -97,6 +102,14 @@ function startRandom() {
 function showRound() {
   const round = rounds[i];
   $("progress").textContent = `Round ${i + 1} of ${rounds.length}`;
+  $("mode-label").textContent = MODE_LABELS[round.mode];
+  $("game").dataset.mode = round.mode;
+  $("progress-track").replaceChildren(...rounds.map((_, index) => {
+    const segment = document.createElement("span");
+    if (index < i) segment.className = "complete";
+    if (index === i) segment.className = "current";
+    return segment;
+  }));
   $("prompt").textContent = round.prompt;
   $("unit").textContent = MODES[round.mode].unit;
   $("result").hidden = true;
@@ -205,10 +218,18 @@ function updateArchive() {
   $("archive-list").replaceChildren(...dates.map((date) => {
     const button = document.createElement("button");
     const state = status.get(date);
+    const dateText = document.createElement("span");
+    const stateText = document.createElement("span");
     button.type = "button";
     button.dataset.date = date;
     button.className = "archive-day";
-    button.textContent = state?.complete ? `${date} · Played` : state ? `${date} · In progress` : date;
+    dateText.className = "archive-date";
+    dateText.textContent = new Intl.DateTimeFormat(undefined, {
+      month: "short", day: "numeric", timeZone: "UTC",
+    }).format(new Date(`${date}T00:00:00Z`));
+    stateText.className = "archive-status";
+    stateText.textContent = state?.complete ? "Played" : state ? "In progress" : "Unplayed";
+    button.append(dateText, stateText);
     if (date === dateLabel && isDaily) button.setAttribute("aria-current", "true");
     return button;
   }));

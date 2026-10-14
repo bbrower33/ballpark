@@ -7,20 +7,32 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="author-page">
-  <main>
-    <header>
-      <h1>Ballpark schedule editor</h1>
-      <p>Create a curated five-round day with city autocomplete.</p>
+  <main class="site-shell author-shell">
+    <header class="site-header">
+      <div class="brand-lockup">
+        <p class="eyebrow">Ballpark field desk</p>
+        <h1>Schedule editor<span aria-hidden="true">.</span></h1>
+        <p class="brand-line">Curate a five-round edition and publish it when you are ready.</p>
+      </div>
+      <a class="text-link" href="index.html">Back to game</a>
     </header>
 
-    <form id="schedule-form">
-      <label for="schedule-date">UTC date</label>
-      <input id="schedule-date" type="date" required>
+    <aside class="author-note">
+      <strong>How it works</strong>
+      <span>Choose a UTC date, select five round types and cities, then download the updated schedule file.</span>
+    </aside>
+
+    <form id="schedule-form" class="author-form">
+      <div class="date-control">
+        <label for="schedule-date">Edition date <span>UTC</span></label>
+        <input id="schedule-date" type="date" required>
+      </div>
       <div id="round-editors"></div>
       <button type="submit">Add day to schedule</button>
     </form>
 
-    <section id="schedule-output" hidden>
+    <section id="schedule-output" class="schedule-output" hidden>
+      <p class="eyebrow">Export</p>
       <h2>Schedule ready</h2>
       <p>Replace the project’s <code>schedule.json</code> with this downloaded file.</p>
       <a id="download-schedule" class="button-link" download="schedule.json">Download schedule.json</a>

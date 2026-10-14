@@ -30,13 +30,20 @@ async function init() {
   $("round-editors").replaceChildren(...DEFAULT_MODES.map(makeRoundEditor));
 }
 
-function cityInput(name, placeholder) {
+function cityInput(name, placeholder, labelText, id) {
+  const control = document.createElement("div");
+  control.className = "city-control";
+  const label = document.createElement("label");
+  label.htmlFor = id;
+  label.textContent = labelText;
   const input = document.createElement("input");
+  input.id = id;
   input.name = name;
   input.placeholder = placeholder;
   input.setAttribute("list", "city-options");
   input.required = true;
-  return input;
+  control.append(label, input);
+  return control;
 }
 
 function makeRoundEditor(mode, index) {
@@ -44,6 +51,7 @@ function makeRoundEditor(mode, index) {
   const legend = document.createElement("legend");
   legend.textContent = `Round ${index + 1}`;
   const select = document.createElement("select");
+  select.id = `round-${index + 1}-mode`;
   select.name = "mode";
   for (const value of ["distance", "coast", "elevation"]) {
     const option = document.createElement("option");
@@ -55,15 +63,27 @@ function makeRoundEditor(mode, index) {
   }
   const fields = document.createElement("div");
   fields.className = "city-fields";
+  const modeControl = document.createElement("div");
+  const modeLabel = document.createElement("label");
+  modeLabel.htmlFor = select.id;
+  modeLabel.textContent = "Question type";
+  modeControl.append(modeLabel, select);
   const renderFields = () => {
     fields.replaceChildren(
-      cityInput(select.value === "distance" ? "a" : "city", "Start typing a city…"),
-      ...(select.value === "distance" ? [cityInput("b", "Second city…")] : []),
+      cityInput(
+        select.value === "distance" ? "a" : "city",
+        "Start typing a city…",
+        select.value === "distance" ? "First city" : "City",
+        `round-${index + 1}-city-a`,
+      ),
+      ...(select.value === "distance" ? [cityInput(
+        "b", "Second city…", "Second city", `round-${index + 1}-city-b`,
+      )] : []),
     );
   };
   select.addEventListener("change", renderFields);
   renderFields();
-  fieldset.append(legend, select, fields);
+  fieldset.append(legend, modeControl, fields);
   return fieldset;
 }
 
