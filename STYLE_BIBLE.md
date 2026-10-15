@@ -37,13 +37,13 @@ Color is supportive, not the only carrier of meaning. Every state also needs a l
 
 ### Display
 
-`Charter, "Iowan Old Style", "Palatino Linotype", Georgia, serif`
+Self-hosted **Fraunces Variable**, exposed in CSS as `"Ballpark Display"`, with Charter and Georgia as emergency fallbacks.
 
 Use for the wordmark, questions, answers, totals, and major section headings. This supplies the editorial and geographic character.
 
 ### Interface
 
-`"Avenir Next", Avenir, "Segoe UI Variable", "Segoe UI", sans-serif`
+Self-hosted **Manrope Variable**, exposed in CSS as `"Ballpark Sans"`, with Segoe UI as an emergency fallback.
 
 Use for controls, dates, metadata, statistics, labels, and instructional copy. This keeps dense UI text clean.
 
@@ -55,6 +55,8 @@ Use for controls, dates, metadata, statistics, labels, and instructional copy. T
 - Body text should normally stay between 14 and 18 pixels.
 - Avoid more than two font families on one screen.
 - Do not use all caps for sentences or primary actions.
+
+The production font files live in `fonts/`. Both families use the SIL Open Font License; their license texts must remain beside the font files when the site is distributed.
 
 ## Layout and spacing
 
