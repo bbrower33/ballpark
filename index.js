@@ -105,6 +105,7 @@ function startRandom() {
 
 function showRound() {
   const round = rounds[i];
+  document.documentElement.classList.add("round-active");
   $("progress").textContent = `Round ${i + 1} of ${rounds.length}`;
   $("mode-label").textContent = MODE_LABELS[round.mode];
   $("game").dataset.mode = round.mode;
@@ -119,10 +120,12 @@ function showRound() {
   $("result").hidden = true;
   $("guess-form").hidden = false;
   $("guess").value = "";
-  $("guess").focus();
+  $("guess").focus({ preventScroll: true });
+  centerRoundPanel();
 }
 
 function showEnd() {
+  document.documentElement.classList.remove("round-active");
   const scores = entries.map((entry) => entry.score);
   const total = scores.reduce((a, b) => a + b, 0);
   $("game").hidden = true;
@@ -132,6 +135,18 @@ function showEnd() {
   $("share").textContent = shareText(scores, dateLabel, TITLE);
   renderRecap();
   updateArchive();
+}
+
+function centerRoundPanel() {
+  requestAnimationFrame(() => {
+    const panel = $("game");
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const block = panel.offsetHeight <= viewportHeight - 32 ? "center" : "start";
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth";
+    panel.scrollIntoView({ behavior, block, inline: "nearest" });
+  });
 }
 
 function formatMeasurement(value, mode) {

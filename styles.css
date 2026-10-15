@@ -76,6 +76,11 @@ html {
   background: var(--paper);
 }
 
+html.round-active {
+  scroll-snap-type: y proximity;
+  scroll-padding-block: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-bottom));
+}
+
 body {
   min-height: 100vh;
   margin: 0;
@@ -216,6 +221,12 @@ h1 span { color: var(--terrain); }
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--paper-raised) 94%, transparent);
   box-shadow: var(--shadow);
+}
+
+html.round-active .game-panel:not([hidden]) {
+  scroll-snap-align: center;
+  scroll-snap-stop: normal;
+  scroll-margin-block: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-bottom));
 }
 
 .game-panel::before, .end-panel::before {
@@ -596,6 +607,15 @@ a { color: inherit; text-underline-offset: .18em; }
   #guess-form > button { width: 100%; }
   footer { flex-direction: column; }
   .author-page fieldset { grid-template-columns: 1fr; }
+}
+
+/* Keep every control reachable on short viewports, including phones in landscape. */
+@media (max-height: 42rem) {
+  html.round-active .game-panel:not([hidden]) { scroll-snap-align: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.round-active { scroll-behavior: auto; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
