@@ -532,6 +532,14 @@ footer {
   font-size: .68rem;
 }
 
+.app-version {
+  margin-left: .35rem;
+  font-size: .56rem;
+  letter-spacing: .06em;
+  opacity: .55;
+  white-space: nowrap;
+}
+
 a { color: inherit; text-underline-offset: .18em; }
 .text-link { color: var(--ocean); font-size: .78rem; font-weight: 750; text-decoration: none; }
 

@@ -36,3 +36,9 @@ test("deployable JSON data is present and valid", () => {
   assert.ok(Array.isArray(cities) && cities.length > 0);
   assert.equal(typeof schedule.days, "object");
 });
+
+test("displayed app version matches package.json", () => {
+  const packageJson = JSON.parse(readFileSync(resolve(projectRoot, "package.json"), "utf8"));
+  const page = readFileSync(resolve(projectRoot, "index.html"), "utf8");
+  assert.match(page, new RegExp(`>v${packageJson.version.replaceAll(".", "\\.")}<`));
+});

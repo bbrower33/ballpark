@@ -1,6 +1,6 @@
 {
   "name": "ballpark-guessing-game",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A dependency-free daily geography estimation game.",
   "private": true,
   "license": "ISC",
