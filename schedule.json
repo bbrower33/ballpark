@@ -1,4 +1,32 @@
 {
   "version": 1,
-  "days": {}
+  "days": {
+    "2026-10-15": {
+      "rounds": [
+        {
+          "mode": "distance",
+          "a": "Warīsān, AE",
+          "b": "Sacaba, BO"
+        },
+        {
+          "mode": "coast",
+          "city": "Sharjah, AE"
+        },
+        {
+          "mode": "distance",
+          "a": "Itaquaquecetuba, BR",
+          "b": "Vila Flor, AO"
+        },
+        {
+          "mode": "elevation",
+          "city": "Dubai, AE"
+        },
+        {
+          "mode": "distance",
+          "a": "Washington, DC",
+          "b": "New York City, NY"
+        }
+      ]
+    }
+  }
 }

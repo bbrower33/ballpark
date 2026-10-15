@@ -1,5 +1,6 @@
 cities.json
 cities15000.txt
+countryInfo.txt
 /processing/*
 !/processing/preprocess.py
 /.venv

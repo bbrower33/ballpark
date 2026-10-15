@@ -1,5 +1,5 @@
 // algorithms.js — core game logic (ES module, no dependencies)
-// Expects cities as objects: { name, label, lat, lon, pop, elev, coastKm }
+// Expects cities as objects: { name, label, displayLabel, lat, lon, pop, elev, coastKm }
 // (elev / coastKm may be null). Build them from cities.json rows with loadCities().
 
 const EARTH_RADIUS_KM = 6371.0088;
@@ -7,10 +7,15 @@ const toRad = (d) => (d * Math.PI) / 180;
 
 /* ---------- 1. Data loading ---------- */
 
-// rows come from preprocess.py: [name, label, lat, lon, pop, elev, coastKm]
+// rows come from preprocess.py:
+// [name, label, lat, lon, pop, elev, coastKm, countryCode, countryName, displayLabel]
 export function loadCities(rows) {
-  return rows.map(([name, label, lat, lon, pop, elev, coastKm]) => ({
+  return rows.map(([
     name, label, lat, lon, pop, elev, coastKm,
+    countryCode, countryName, displayLabel,
+  ]) => ({
+    name, label, lat, lon, pop, elev, coastKm, countryCode, countryName,
+    displayLabel: displayLabel ?? label,
   }));
 }
 
@@ -34,6 +39,28 @@ export const MODES = {
   coast:     { offset: 10,  k: 25, unit: "km" },
   elevation: { offset: 100, k: 20, unit: "m"  },
 };
+
+const UNIT_FACTORS = {
+  metric: { distance: 1, coast: 1, elevation: 1 },
+  imperial: { distance: 0.6213711922, coast: 0.6213711922, elevation: 3.280839895 },
+};
+
+const UNIT_LABELS = {
+  metric: { distance: "km", coast: "km", elevation: "m" },
+  imperial: { distance: "mi", coast: "mi", elevation: "ft" },
+};
+
+export function unitLabel(mode, system = "metric") {
+  return UNIT_LABELS[system]?.[mode] ?? MODES[mode].unit;
+}
+
+export function toDisplayUnit(value, mode, system = "metric") {
+  return value * (UNIT_FACTORS[system]?.[mode] ?? 1);
+}
+
+export function toCanonicalUnit(value, mode, system = "metric") {
+  return value / (UNIT_FACTORS[system]?.[mode] ?? 1);
+}
 
 export function score(guess, actual, mode) {
   const { offset, k } = MODES[mode];
@@ -113,7 +140,7 @@ export function makeDistanceRound(cities, rng, minKm = 100, maxKm = 15000, tol =
     return {
       mode: "distance",
       a, b,
-      prompt: `How far is ${a.label} from ${b.label}?`,
+      prompt: `How far is ${a.displayLabel} from ${b.displayLabel}?`,
       answer: haversineKm(a.lat, a.lon, b.lat, b.lon),
     };
   }
@@ -137,14 +164,14 @@ export const makeElevationRound = (cities, rng) =>
     cities, rng, "elevation",
     (c) => (c.elev != null && c.elev > -90 ? c.elev : null), // keep log scoring sane
     [-90, 50, 300, 1000, 9000],
-    (c) => `What is the elevation of ${c.label}, in meters above sea level?`
+    (c) => `What is the elevation of ${c.displayLabel}?`
   );
 
 export const makeCoastRound = (cities, rng) =>
   makeStratifiedRound(
     cities, rng, "coast", (c) => c.coastKm,
     [0, 20, 200, 1000, 5000],
-    (c) => `How far is ${c.label} from the nearest ocean coast, in km?`
+    (c) => `How far is ${c.displayLabel} from the nearest ocean coast?`
   );
 
 function cityByLabel(cities, label) {
@@ -165,7 +192,7 @@ export function makeScheduledGame(cities, specs) {
       if (a === b) throw new Error("A distance round needs two different cities");
       return {
         mode: "distance", a, b,
-        prompt: `How far is ${a.label} from ${b.label}?`,
+        prompt: `How far is ${a.displayLabel} from ${b.displayLabel}?`,
         answer: haversineKm(a.lat, a.lon, b.lat, b.lon),
       };
     }
@@ -174,7 +201,7 @@ export function makeScheduledGame(cities, specs) {
       if (city.coastKm == null) throw new Error(`No coast distance for ${city.label}`);
       return {
         mode: "coast", city,
-        prompt: `How far is ${city.label} from the nearest ocean coast, in km?`,
+        prompt: `How far is ${city.displayLabel} from the nearest ocean coast?`,
         answer: city.coastKm,
       };
     }
@@ -185,7 +212,7 @@ export function makeScheduledGame(cities, specs) {
       }
       return {
         mode: "elevation", city,
-        prompt: `What is the elevation of ${city.label}, in meters above sea level?`,
+        prompt: `What is the elevation of ${city.displayLabel}?`,
         answer: city.elev,
       };
     }

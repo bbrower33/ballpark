@@ -1,5 +1,8 @@
 """
-preprocess.py — turn GeoNames cities15000.txt into a compact cities.json.
+preprocess.py — turn GeoNames cities15000.txt and countryInfo.txt into cities.json.
+
+Put both GeoNames files in the project root. If cities.json already contains
+coast distances, running without a coastline argument preserves those values.
 
 Usage:
     python processing/preprocess.py
@@ -14,12 +17,29 @@ from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 CITIES_FILE = PROJECT_DIR / "cities15000.txt"
+COUNTRIES_FILE = PROJECT_DIR / "countryInfo.txt"
 OUT_FILE = PROJECT_DIR / "cities.json"
 MIN_POP = 100_000          # keep recognizable cities only (~4-5k cities)
 EARTH_RADIUS_KM = 6371.0088
 
 
+def load_country_names():
+    if not COUNTRIES_FILE.is_file():
+        raise FileNotFoundError(
+            f"Country data not found: {COUNTRIES_FILE}\n"
+            "Download https://download.geonames.org/export/dump/countryInfo.txt "
+            "to the project root."
+        )
+    names = {}
+    with open(COUNTRIES_FILE, encoding="utf-8") as f:
+        for row in csv.reader((line for line in f if not line.startswith("#")), delimiter="\t"):
+            if len(row) >= 5:
+                names[row[0]] = row[4].strip()
+    return names
+
+
 def load_cities():
+    country_names = load_country_names()
     cities = []
     with open(CITIES_FILE, encoding="utf-8") as f:
         # GeoNames columns (tab-separated):
@@ -37,11 +57,20 @@ def load_cities():
             elif row[16].strip() and int(row[16]) != -9999:
                 elev = int(row[16])
             country, admin1 = row[8], row[10]
+            country_name = country_names.get(country, country)
             # Disambiguate (Springfield, OH vs Springfield, MA)
             suffix = admin1 if country == "US" and admin1 else country
+            display_label = (
+                f"{row[1]}, {admin1}, {country_name}"
+                if country == "US" and admin1
+                else f"{row[1]}, {country_name}"
+            )
             cities.append({
                 "name": row[1],
                 "label": f"{row[1]}, {suffix}",
+                "displayLabel": display_label,
+                "countryCode": country,
+                "countryName": country_name,
                 "lat": round(float(row[4]), 3),
                 "lon": round(float(row[5]), 3),
                 "pop": pop,
@@ -49,6 +78,22 @@ def load_cities():
                 "coast": None,
             })
     return cities
+
+
+def preserve_existing_coast_distances(cities):
+    """Keep computed coast values when rebuilding metadata without a shapefile."""
+    if not OUT_FILE.is_file():
+        return 0
+    with open(OUT_FILE, encoding="utf-8") as f:
+        rows = json.load(f)
+    existing = {(row[0], row[1], row[2], row[3]): row[6] for row in rows if len(row) > 6}
+    restored = 0
+    for city in cities:
+        key = (city["name"], city["label"], city["lat"], city["lon"])
+        if existing.get(key) is not None:
+            city["coast"] = existing[key]
+            restored += 1
+    return restored
 
 
 # ---------- distance to coast ----------
@@ -140,7 +185,14 @@ if __name__ == "__main__":
     cities = load_cities()
     if args.coastline:
         add_coast_distances(cities, args.coastline)
-    rows = [[c["name"], c["label"], c["lat"], c["lon"], c["pop"], c["elev"], c["coast"]]
+    else:
+        restored = preserve_existing_coast_distances(cities)
+        if restored:
+            print(f"Preserved coast distances for {restored} cities from {OUT_FILE}")
+    rows = [[
+        c["name"], c["label"], c["lat"], c["lon"], c["pop"], c["elev"], c["coast"],
+        c["countryCode"], c["countryName"], c["displayLabel"],
+    ]
             for c in cities]
     with open(OUT_FILE, "w", encoding="utf-8") as f:
         json.dump(rows, f, ensure_ascii=False, separators=(",", ":"))

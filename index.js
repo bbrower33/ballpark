@@ -1,6 +1,7 @@
 import {
   loadCities, makeGame, makeScheduledGame, dailyRng, makeRng, score,
-  percentError, withinFactor, shareText, todayUTC, MODES,
+  percentError, withinFactor, shareText, todayUTC,
+  unitLabel, toDisplayUnit, toCanonicalUnit,
 } from "./algorithms.js";
 import {
   readDayState, writeDayState, listDayStates, calculateStats, shiftUTCDate,
@@ -9,6 +10,7 @@ import {
 const TITLE = "Ballpark";
 const ARCHIVE_START = "2026-01-01";
 const ARCHIVE_DAYS_SHOWN = 14;
+const UNIT_STORAGE_KEY = "ballpark:units";
 const MODE_LABELS = {
   distance: "City to city",
   coast: "Nearest coast",
@@ -24,6 +26,7 @@ let entries = [];
 let i = 0;
 let dateLabel = "";
 let isDaily = true;
+let unitSystem = "metric";
 
 async function init() {
   try {
@@ -41,6 +44,7 @@ async function init() {
     return;
   }
 
+  setupUnitPreference();
   setupArchive();
   startDaily(todayUTC());
 }
@@ -111,7 +115,7 @@ function showRound() {
     return segment;
   }));
   $("prompt").textContent = round.prompt;
-  $("unit").textContent = MODES[round.mode].unit;
+  $("unit").textContent = unitLabel(round.mode, unitSystem);
   $("result").hidden = true;
   $("guess-form").hidden = false;
   $("guess").value = "";
@@ -126,7 +130,51 @@ function showEnd() {
   $("end-title").textContent = isDaily ? `${dateLabel} complete` : "Random game complete";
   $("total").textContent = `${total} / ${rounds.length * 1000}`;
   $("share").textContent = shareText(scores, dateLabel, TITLE);
+  renderRecap();
   updateArchive();
+}
+
+function formatMeasurement(value, mode) {
+  return `${fmt(toDisplayUnit(value, mode, unitSystem))} ${unitLabel(mode, unitSystem)}`;
+}
+
+function renderRoundResult(round, entry) {
+  const error = percentError(entry.guess, round.answer);
+  const close = withinFactor(entry.guess, round.answer, round.mode, 2);
+  $("answer").textContent = formatMeasurement(round.answer, round.mode);
+  $("detail").innerHTML =
+    `You said ${formatMeasurement(entry.guess, round.mode)}` +
+    (error === null ? "" : ` (${error > 0 ? "+" : ""}${Math.round(error)}%)`) +
+    `. <b>${entry.score} points</b>` +
+    (close ? ` <span class="good">Within 2x.</span>` : ` <span class="bad">More than 2x off.</span>`);
+}
+
+function renderRecap() {
+  $("round-recap").replaceChildren(...rounds.map((round, index) => {
+    const entry = entries[index];
+    const item = document.createElement("li");
+    const top = document.createElement("div");
+    const mode = document.createElement("span");
+    const points = document.createElement("strong");
+    const question = document.createElement("p");
+    const measurements = document.createElement("p");
+    const error = percentError(entry.guess, round.answer);
+
+    top.className = "recap-top";
+    mode.className = "recap-mode";
+    mode.textContent = `Round ${index + 1} · ${MODE_LABELS[round.mode]}`;
+    points.textContent = `${entry.score} pts`;
+    question.className = "recap-question";
+    question.textContent = round.prompt;
+    measurements.className = "recap-measurements";
+    measurements.textContent =
+      `You: ${formatMeasurement(entry.guess, round.mode)} · ` +
+      `Answer: ${formatMeasurement(round.answer, round.mode)}` +
+      (error === null ? "" : ` · ${error > 0 ? "+" : ""}${Math.round(error)}%`);
+    top.append(mode, points);
+    item.append(top, question, measurements);
+    return item;
+  }));
 }
 
 function showError(message) {
@@ -136,10 +184,11 @@ function showError(message) {
 
 $("guess-form").addEventListener("submit", (event) => {
   event.preventDefault();
-  const guess = Number($("guess").value.replace(/,/g, "").trim());
-  if (!Number.isFinite(guess)) return;
+  const enteredGuess = Number($("guess").value.replace(/,/g, "").trim());
+  if (!Number.isFinite(enteredGuess)) return;
 
   const round = rounds[i];
+  const guess = toCanonicalUnit(enteredGuess, round.mode, unitSystem);
   const points = score(guess, round.answer, round.mode);
   if (isDaily) {
     const latest = readDayState(localStorage, dateLabel);
@@ -160,15 +209,7 @@ $("guess-form").addEventListener("submit", (event) => {
     }
   }
 
-  const unit = MODES[round.mode].unit;
-  const error = percentError(guess, round.answer);
-  const close = withinFactor(guess, round.answer, round.mode, 2);
-  $("answer").textContent = `${fmt(round.answer)} ${unit}`;
-  $("detail").innerHTML =
-    `You said ${fmt(guess)} ${unit}` +
-    (error === null ? "" : ` (${error > 0 ? "+" : ""}${Math.round(error)}%)`) +
-    `. <b>${points} points</b>` +
-    (close ? ` <span class="good">Within 2x.</span>` : ` <span class="bad">More than 2x off.</span>`);
+  renderRoundResult(round, entries.at(-1));
   $("next").textContent = i === rounds.length - 1 ? "See results" : "Next round";
   $("guess-form").hidden = true;
   $("result").hidden = false;
@@ -191,6 +232,28 @@ $("copy").addEventListener("click", async () => {
 });
 
 $("again").addEventListener("click", startRandom);
+
+function setupUnitPreference() {
+  try {
+    const saved = localStorage.getItem(UNIT_STORAGE_KEY);
+    if (saved === "metric" || saved === "imperial") unitSystem = saved;
+  } catch {
+    // Storage may be blocked; the in-memory preference still works for this visit.
+  }
+  const selected = document.querySelector(`input[name="units"][value="${unitSystem}"]`);
+  if (selected) selected.checked = true;
+  $("unit-toggle").addEventListener("change", (event) => {
+    if (!event.target.matches('input[name="units"]')) return;
+    unitSystem = event.target.value;
+    try { localStorage.setItem(UNIT_STORAGE_KEY, unitSystem); } catch { /* use memory only */ }
+    if (!$("game").hidden) {
+      const round = rounds[i];
+      $("unit").textContent = unitLabel(round.mode, unitSystem);
+      if (!$("result").hidden && entries[i]) renderRoundResult(round, entries[i]);
+    }
+    if (!$("end").hidden) renderRecap();
+  });
+}
 
 function setupArchive() {
   $("archive-date").min = ARCHIVE_START;

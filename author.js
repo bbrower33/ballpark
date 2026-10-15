@@ -25,6 +25,7 @@ async function init() {
   $("city-options").replaceChildren(...cities.map((city) => {
     const option = document.createElement("option");
     option.value = city.label;
+    option.label = city.displayLabel;
     return option;
   }));
   $("round-editors").replaceChildren(...DEFAULT_MODES.map(makeRoundEditor));

@@ -7,7 +7,7 @@
   <title>Ballpark – guess the distance</title>
   <link rel="preload" href="fonts/fraunces-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/manrope-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261014-2">
+  <link rel="stylesheet" href="styles.css?v=20261014-3">
 </head>
 <body class="game-page">
   <main class="site-shell">
@@ -17,7 +17,14 @@
         <h1>Ballpark<span aria-hidden="true">.</span></h1>
         <p class="brand-line">Measure the world from memory.</p>
       </div>
-      <p id="meta" class="date-stamp"></p>
+      <div class="header-controls">
+        <p id="meta" class="date-stamp"></p>
+        <fieldset id="unit-toggle" class="unit-toggle">
+          <legend class="sr-only">Unit system</legend>
+          <label><input type="radio" name="units" value="metric">Metric</label>
+          <label><input type="radio" name="units" value="imperial">Imperial</label>
+        </fieldset>
+      </div>
     </header>
 
     <section id="game" class="game-panel" hidden>
@@ -51,6 +58,13 @@
       <h2 id="end-title"></h2>
       <p id="total"></p>
       <pre id="share"></pre>
+      <section class="recap" aria-labelledby="recap-title">
+        <div class="recap-heading">
+          <p class="eyebrow">Your estimates</p>
+          <h3 id="recap-title">Round recap</h3>
+        </div>
+        <ol id="round-recap"></ol>
+      </section>
       <div class="button-row">
         <button id="copy" type="button">Copy result</button>
         <button id="again" class="button-secondary" type="button">Play a random game</button>
@@ -82,6 +96,6 @@
       <span>City data: <a href="https://www.geonames.org/">GeoNames</a> (CC BY 4.0). Coastline: Natural Earth.</span>
     </footer>
   </main>
-  <script type="module" src="index.js?v=20261014-2"></script>
+  <script type="module" src="index.js?v=20261014-3"></script>
 </body>
 </html>
