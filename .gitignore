@@ -1,8 +1,6 @@
-cities.json
-cities15000.txt
-countryInfo.txt
-/processing/*
-!/processing/preprocess.py
-/.venv
-algorithm.js
-ne_10m_coastline/
+/source-data/
+/ne_10m_coastline/
+/.venv/
+/.qa/
+__pycache__/
+*.py[cod]

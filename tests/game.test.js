@@ -3,10 +3,10 @@ import assert from "node:assert/strict";
 import {
   loadCities, makeRng, makeScheduledGame, score, shareText,
   toCanonicalUnit, toDisplayUnit, unitLabel,
-} from "../algorithms.js";
+} from "../assets/js/algorithms.js";
 import {
   calculateStats, listDayStates, readDayState, storageKey, writeDayState,
-} from "../game-state.js";
+} from "../assets/js/game-state.js";
 
 class MemoryStorage {
   constructor() { this.values = new Map(); }

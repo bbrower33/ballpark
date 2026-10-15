@@ -1,11 +1,11 @@
 {
-  "name": "Ballpark Guessing Game",
+  "name": "ballpark-guessing-game",
   "version": "1.0.0",
-  "description": "",
+  "description": "A dependency-free daily geography estimation game.",
+  "private": true,
   "license": "ISC",
   "author": "Brian B.",
   "type": "module",
-  "main": "index.js",
   "scripts": {
     "test": "node --test --test-isolation=none"
   }

@@ -9,10 +9,10 @@ let downloadUrl = null;
 async function init() {
   try {
     const [citiesResponse, scheduleResponse] = await Promise.all([
-      fetch("cities.json"),
-      fetch("schedule.json"),
+      fetch("data/cities.json"),
+      fetch("data/schedule.json"),
     ]);
-    if (!citiesResponse.ok) throw new Error("Could not load cities.json");
+    if (!citiesResponse.ok) throw new Error("Could not load data/cities.json");
     cities = loadCities(await citiesResponse.json());
     if (scheduleResponse.ok) schedule = await scheduleResponse.json();
   } catch (error) {

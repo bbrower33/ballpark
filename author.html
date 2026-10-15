@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#17211e">
   <title>Ballpark schedule editor</title>
-  <link rel="preload" href="fonts/fraunces-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/manrope-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261014-4">
+  <link rel="preload" href="assets/fonts/fraunces-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/manrope-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/styles.css?v=20261014-5">
 </head>
 <body class="author-page">
   <main class="site-shell author-shell">
@@ -37,7 +37,7 @@
     <section id="schedule-output" class="schedule-output" hidden>
       <p class="eyebrow">Export</p>
       <h2>Schedule ready</h2>
-      <p>Replace the project’s <code>schedule.json</code> with this downloaded file.</p>
+      <p>Replace the project’s <code>data/schedule.json</code> with this downloaded file.</p>
       <a id="download-schedule" class="button-link" download="schedule.json">Download schedule.json</a>
       <pre id="schedule-preview"></pre>
     </section>
@@ -45,6 +45,6 @@
     <datalist id="city-options"></datalist>
     <p id="error" role="alert" hidden></p>
   </main>
-  <script type="module" src="author.js?v=20261014-3"></script>
+  <script type="module" src="assets/js/author.js?v=20261014-5"></script>
 </body>
 </html>

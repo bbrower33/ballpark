@@ -31,10 +31,10 @@ let unitSystem = "metric";
 async function init() {
   try {
     const [citiesResponse, scheduleResponse] = await Promise.all([
-      fetch("cities.json"),
-      fetch("schedule.json").catch(() => null),
+      fetch("data/cities.json"),
+      fetch("data/schedule.json").catch(() => null),
     ]);
-    if (!citiesResponse.ok) throw new Error(`cities.json: ${citiesResponse.status}`);
+    if (!citiesResponse.ok) throw new Error(`data/cities.json: ${citiesResponse.status}`);
     cities = loadCities(await citiesResponse.json());
     if (scheduleResponse?.ok) schedule = await scheduleResponse.json();
   } catch {

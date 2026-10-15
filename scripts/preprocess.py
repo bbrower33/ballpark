@@ -1,13 +1,13 @@
 """
-preprocess.py — turn GeoNames cities15000.txt and countryInfo.txt into cities.json.
+preprocess.py — turn GeoNames source files into data/cities.json.
 
-Put both GeoNames files in the project root. If cities.json already contains
-coast distances, running without a coastline argument preserves those values.
+Put cities15000.txt and countryInfo.txt in source-data/. If data/cities.json
+already contains coast distances, running without a coastline argument preserves them.
 
 Usage:
-    python processing/preprocess.py
-    python processing/preprocess.py C:\\path\\to\\ne_10m_coastline.shp
-    python processing/preprocess.py C:\\path\\to\\ne_10m_coastline
+    python scripts/preprocess.py
+    python scripts/preprocess.py C:\\path\\to\\ne_10m_coastline.shp
+    python scripts/preprocess.py C:\\path\\to\\ne_10m_coastline
 
 """
 import argparse
@@ -16,9 +16,10 @@ import json
 from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
-CITIES_FILE = PROJECT_DIR / "cities15000.txt"
-COUNTRIES_FILE = PROJECT_DIR / "countryInfo.txt"
-OUT_FILE = PROJECT_DIR / "cities.json"
+SOURCE_DIR = PROJECT_DIR / "source-data"
+CITIES_FILE = SOURCE_DIR / "cities15000.txt"
+COUNTRIES_FILE = SOURCE_DIR / "countryInfo.txt"
+OUT_FILE = PROJECT_DIR / "data" / "cities.json"
 MIN_POP = 100_000          # keep recognizable cities only (~4-5k cities)
 EARTH_RADIUS_KM = 6371.0088
 
@@ -28,7 +29,7 @@ def load_country_names():
         raise FileNotFoundError(
             f"Country data not found: {COUNTRIES_FILE}\n"
             "Download https://download.geonames.org/export/dump/countryInfo.txt "
-            "to the project root."
+            "to source-data/."
         )
     names = {}
     with open(COUNTRIES_FILE, encoding="utf-8") as f:

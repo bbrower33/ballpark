@@ -29,7 +29,7 @@ The interface should reward making an educated estimate. It must never feel like
 | `--good` | `#28764d` | Successful feedback |
 | `--bad` | `#ad4936` | Error and large-miss feedback |
 
-Dark-mode values live beside the light tokens in `styles.css`. New components must use tokens rather than hard-coded colors.
+Dark-mode values live beside the light tokens in `assets/css/styles.css`. New components must use tokens rather than hard-coded colors.
 
 Color is supportive, not the only carrier of meaning. Every state also needs a label, border treatment, or structural difference.
 
@@ -56,7 +56,7 @@ Use for controls, dates, metadata, statistics, labels, and instructional copy. T
 - Avoid more than two font families on one screen.
 - Do not use all caps for sentences or primary actions.
 
-The production font files live in `fonts/`. Both families use the SIL Open Font License; their license texts must remain beside the font files when the site is distributed.
+The production font files live in `assets/fonts/`. Both families use the SIL Open Font License; their license texts must remain beside the font files when the site is distributed.
 
 ## Layout and spacing
 
@@ -141,4 +141,4 @@ Each mode may receive one restrained accent color, a short label, and a consiste
 
 ### Final naming
 
-When the placeholder name changes, update the visible wordmark, document title, `TITLE` in `index.js`, share text, and authoring-page title together. Preserve the visual hierarchy even if the wordmark length changes.
+When the placeholder name changes, update the visible wordmark, document title, `TITLE` in `assets/js/index.js`, share text, and authoring-page title together. Preserve the visual hierarchy even if the wordmark length changes.
