@@ -1,5 +1,11 @@
 import { loadCities, makeScheduledGame, todayUTC } from "./algorithms.js";
 
+const LOCAL_AUTHOR_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
+if (!LOCAL_AUTHOR_HOSTS.has(window.location.hostname)) {
+  document.documentElement.replaceChildren();
+  throw new Error("The Ballpark schedule editor is available only on localhost.");
+}
+
 const $ = (id) => document.getElementById(id);
 const DEFAULT_MODES = ["distance", "coast", "distance", "elevation", "distance"];
 let cities = [];

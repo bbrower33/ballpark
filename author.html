@@ -4,6 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#17211e">
+  <meta name="robots" content="noindex, nofollow">
+  <script>
+    (() => {
+      const localHosts = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
+      if (!localHosts.has(window.location.hostname)) window.location.replace("./");
+    })();
+  </script>
   <title>Ballpark schedule editor</title>
   <link rel="preload" href="assets/fonts/fraunces-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/manrope-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
@@ -45,6 +52,6 @@
     <datalist id="city-options"></datalist>
     <p id="error" role="alert" hidden></p>
   </main>
-  <script type="module" src="assets/js/author.js?v=20261014-5"></script>
+  <script type="module" src="assets/js/author.js?v=20261014-8"></script>
 </body>
 </html>

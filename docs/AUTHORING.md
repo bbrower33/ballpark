@@ -1,5 +1,9 @@
 # Scheduling and Authoring Ballpark Days
 
+The schedule editor is intentionally localhost-only. GitHub Pages and other
+public hosts redirect `author.html` to the game, and the authoring module also
+refuses to initialize outside a loopback hostname.
+
 Ballpark supports two kinds of daily editions:
 
 - **Seeded editions:** generated automatically from the UTC date.

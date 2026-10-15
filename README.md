@@ -10,7 +10,8 @@ Serve the project root over HTTP:
 python -m http.server 8000
 ```
 
-Open `http://localhost:8000/`. The schedule editor is at `/author.html`.
+Open `http://localhost:8000/`. The schedule editor is available locally at
+`http://localhost:8000/author.html`; public hosts redirect that URL to the game.
 
 ## Project structure
 

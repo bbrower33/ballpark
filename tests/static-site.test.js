@@ -54,3 +54,11 @@ test("every curated schedule resolves to five playable rounds", () => {
     assert.ok(rounds.every((round) => Number.isFinite(round.answer)), `${date} has an invalid answer`);
   }
 });
+
+test("the schedule editor is marked private and restricted to localhost", () => {
+  const page = readFileSync(resolve(projectRoot, "author.html"), "utf8");
+  const script = readFileSync(resolve(projectRoot, "assets/js/author.js"), "utf8");
+  assert.match(page, /name="robots" content="noindex, nofollow"/);
+  assert.match(page, /location\.replace\("\.\/"\)/);
+  assert.match(script, /available only on localhost/);
+});
