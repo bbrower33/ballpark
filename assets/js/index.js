@@ -1,16 +1,17 @@
 import {
   loadCities, makeGame, makeScheduledGame, dailyRng, makeRng, score,
   percentError, withinFactor, shareText, todayUTC,
-  unitLabel, toDisplayUnit, toCanonicalUnit,
+  unitLabel, toDisplayUnit, toCanonicalUnit, parseGuessInput,
 } from "./algorithms.js";
 import {
   readDayState, writeDayState, listDayStates, calculateStats, shiftUTCDate,
 } from "./game-state.js";
 
 const TITLE = "Ballpark";
-const ARCHIVE_START = "2026-01-01";
+const ARCHIVE_START = "2026-10-01";
 const ARCHIVE_DAYS_SHOWN = 14;
 const UNIT_STORAGE_KEY = "ballpark:units";
+const INTRO_STORAGE_KEY = "ballpark:intro-seen";
 const MODE_LABELS = {
   distance: "City to city",
   coast: "Nearest coast",
@@ -45,6 +46,7 @@ async function init() {
   }
 
   setupUnitPreference();
+  setupHowTo();
   setupArchive();
   startDaily(todayUTC());
 }
@@ -120,6 +122,7 @@ function showRound() {
   $("result").hidden = true;
   $("guess-form").hidden = false;
   $("guess").value = "";
+  clearGuessError();
   $("guess").focus({ preventScroll: true });
   centerRoundPanel();
 }
@@ -199,10 +202,13 @@ function showError(message) {
 
 $("guess-form").addEventListener("submit", (event) => {
   event.preventDefault();
-  const enteredGuess = Number($("guess").value.replace(/,/g, "").trim());
-  if (!Number.isFinite(enteredGuess)) return;
-
   const round = rounds[i];
+  const parsed = parseGuessInput($("guess").value, round.mode);
+  if (parsed.error) {
+    showGuessError(parsed.error);
+    return;
+  }
+  const enteredGuess = parsed.value;
   const guess = toCanonicalUnit(enteredGuess, round.mode, unitSystem);
   const points = score(guess, round.answer, round.mode);
   if (isDaily) {
@@ -231,6 +237,8 @@ $("guess-form").addEventListener("submit", (event) => {
   $("next").focus();
 });
 
+$("guess").addEventListener("input", clearGuessError);
+
 $("next").addEventListener("click", () => {
   i++;
   if (i < rounds.length) showRound();
@@ -247,6 +255,34 @@ $("copy").addEventListener("click", async () => {
 });
 
 $("again").addEventListener("click", startRandom);
+
+function showGuessError(message) {
+  $("guess-error").textContent = message;
+  $("guess-error").hidden = false;
+  $("guess").setAttribute("aria-invalid", "true");
+  $("guess").focus();
+}
+
+function clearGuessError() {
+  $("guess-error").hidden = true;
+  $("guess-error").textContent = "";
+  $("guess").setAttribute("aria-invalid", "false");
+}
+
+function setupHowTo() {
+  const dialog = $("how-to-dialog");
+  const openDialog = () => {
+    if (!dialog.open) dialog.showModal();
+  };
+  $("how-to-open").addEventListener("click", openDialog);
+  dialog.addEventListener("close", () => {
+    try { localStorage.setItem(INTRO_STORAGE_KEY, "1"); } catch { /* show again next visit */ }
+  });
+
+  let hasSeenIntro = false;
+  try { hasSeenIntro = localStorage.getItem(INTRO_STORAGE_KEY) === "1"; } catch { /* show it */ }
+  if (!hasSeenIntro) requestAnimationFrame(openDialog);
+}
 
 function setupUnitPreference() {
   try {

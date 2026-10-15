@@ -62,6 +62,27 @@ export function toCanonicalUnit(value, mode, system = "metric") {
   return value / (UNIT_FACTORS[system]?.[mode] ?? 1);
 }
 
+export function parseGuessInput(rawValue, mode) {
+  const text = String(rawValue ?? "").trim();
+  if (!text) return { value: null, error: "Enter an estimate before locking it in." };
+
+  const numberPattern = /^[+-]?(?:(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
+  if (!numberPattern.test(text)) {
+    return { value: null, error: "Enter a number using digits and an optional decimal point." };
+  }
+  const value = Number(text.replace(/,/g, ""));
+  if (!Number.isFinite(value)) {
+    return { value: null, error: "Enter a number using digits and an optional decimal point." };
+  }
+  if ((mode === "distance" || mode === "coast") && value < 0) {
+    return { value: null, error: "Distance estimates cannot be negative." };
+  }
+  if (Math.abs(value) > 1e12) {
+    return { value: null, error: "That estimate is too large. Try a value below one trillion." };
+  }
+  return { value, error: null };
+}
+
 export function score(guess, actual, mode) {
   const { offset, k } = MODES[mode];
   const g = Math.max(guess + offset, 1);

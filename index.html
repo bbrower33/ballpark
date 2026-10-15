@@ -7,9 +7,10 @@
   <title>Ballpark – guess the distance</title>
   <link rel="preload" href="assets/fonts/fraunces-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/manrope-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/styles.css?v=20261014-6">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20261014-7">
 </head>
 <body class="game-page">
+  <a class="skip-link" href="#game">Skip to game</a>
   <main class="site-shell">
     <header class="site-header">
       <div class="brand-lockup">
@@ -24,28 +25,30 @@
           <label><input type="radio" name="units" value="metric">Metric</label>
           <label><input type="radio" name="units" value="imperial">Imperial</label>
         </fieldset>
+        <button id="how-to-open" class="utility-button" type="button" aria-haspopup="dialog">How to play</button>
       </div>
     </header>
 
-    <section id="game" class="game-panel" hidden>
+    <section id="game" class="game-panel" aria-labelledby="prompt" hidden>
       <div class="round-toolbar">
-        <p id="progress"></p>
+        <p id="progress" aria-live="polite"></p>
         <span id="mode-label" class="mode-label"></span>
       </div>
       <div id="progress-track" class="progress-track" aria-hidden="true"></div>
       <h2 id="prompt"></h2>
-      <form id="guess-form" autocomplete="off">
+      <form id="guess-form" autocomplete="off" novalidate>
         <div class="guess-control">
           <label for="guess">Your estimate</label>
           <div class="guess-field">
-            <input id="guess" type="text" inputmode="decimal" required>
+            <input id="guess" type="text" inputmode="decimal" aria-describedby="unit guess-error" aria-invalid="false" required>
             <span id="unit"></span>
           </div>
+          <p id="guess-error" class="field-error" role="alert" hidden></p>
         </div>
         <button type="submit">Lock in guess</button>
       </form>
 
-      <div id="result" hidden>
+      <div id="result" aria-live="polite" hidden>
         <p class="result-label">Actual answer</p>
         <p id="answer"></p>
         <p id="detail"></p>
@@ -77,7 +80,7 @@
           <p class="eyebrow">Past editions</p>
           <h2 id="archive-title">Archive</h2>
         </div>
-        <p id="stats"></p>
+        <p id="stats" aria-live="polite"></p>
       </div>
       <p class="archive-note">Each daily challenge can be played once on this browser.</p>
       <div id="archive-list" class="archive-list"></div>
@@ -91,11 +94,35 @@
     </section>
 
     <p id="error" role="alert" hidden></p>
+    <details class="data-notes">
+      <summary>Data notes</summary>
+      <div>
+        <p>Ocean-coast distances use Natural Earth’s ocean coastline. Inland seas such as the Caspian are not counted, so cities such as Baku appear far from the coast.</p>
+        <p>Some elevations fall back to modeled terrain data and can be imprecise in steep areas. Cities below approximately −90 m are excluded from elevation rounds.</p>
+      </div>
+    </details>
     <footer>
       <span>Five questions. One educated guess at a time.</span>
       <span>City data: <a href="https://www.geonames.org/">GeoNames</a> (CC BY 4.0). Coastline: Natural Earth. <span class="app-version" title="Ballpark version 0.1.0">v0.1.0</span></span>
     </footer>
   </main>
-  <script type="module" src="assets/js/index.js?v=20261014-5"></script>
+
+  <dialog id="how-to-dialog" aria-labelledby="how-to-title">
+    <form class="how-to-content" method="dialog">
+      <button class="dialog-close" type="submit" aria-label="Close how to play">Close</button>
+      <p class="eyebrow">The quick version</p>
+      <h2 id="how-to-title">How to play</h2>
+      <p>Make one numerical estimate in each of five rounds. An exact answer earns 1,000 points; scores fall smoothly as the estimate moves farther from the answer.</p>
+      <div class="how-to-modes">
+        <p><strong>City to city</strong><span>Estimate the straight-line distance.</span></p>
+        <p><strong>Nearest coast</strong><span>Estimate the distance to the nearest ocean coastline.</span></p>
+        <p><strong>Elevation</strong><span>Estimate the city’s height above sea level.</span></p>
+      </div>
+      <p class="how-to-note">Metric and Imperial use identical scoring. Daily editions reset at 00:00 UTC and can be played once in this browser; random games are unlimited.</p>
+      <button type="submit" value="close">Start guessing</button>
+    </form>
+  </dialog>
+
+  <script type="module" src="assets/js/index.js?v=20261014-7"></script>
 </body>
 </html>

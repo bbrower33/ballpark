@@ -74,6 +74,17 @@ City labels must exactly match the labels in `data/cities.json`. The schedule ed
 - Test coast and elevation selections through the editor; it rejects missing or unusable values.
 - The schedule file is public game data. Never put secrets, private notes, or unpublished credentials in it.
 
+## Publish a curated edition
+
+1. Add and validate the day in the schedule editor.
+2. Replace `data/schedule.json` with the downloaded file.
+3. Run `npm test`. The test suite resolves every scheduled city and verifies that each edition produces five finite answers.
+4. Serve the project locally and open the scheduled UTC date through the archive date picker.
+5. Verify every prompt, unit, answer reveal, and round recap.
+6. Commit and push `data/schedule.json`. GitHub Pages will publish it with the rest of the static site.
+
+The first curated launch edition is `2026-10-01`. It deliberately covers all three round types with recognizable cities and also serves as the authoring-workflow reference edition.
+
 ## What happens on game day
 
 The browser loads `data/schedule.json` when the game starts. If today has a curated five-round entry, Ballpark uses it. Otherwise it generates the normal shared seeded edition. Archives use the same rule for their selected UTC date.

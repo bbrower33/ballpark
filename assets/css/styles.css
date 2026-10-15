@@ -98,6 +98,22 @@ body {
 button, input, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  top: .75rem;
+  left: .75rem;
+  padding: .55rem .75rem;
+  color: #fff;
+  border-radius: var(--radius-sm);
+  background: var(--ocean-deep);
+  font-size: .8rem;
+  font-weight: 750;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus { transform: translateY(0); }
+
 .site-shell {
   width: min(calc(100% - 2rem), 44rem);
   margin: 0 auto;
@@ -117,6 +133,20 @@ button, a { -webkit-tap-highlight-color: transparent; }
   justify-items: end;
   gap: .55rem;
 }
+
+.utility-button {
+  min-height: 0;
+  padding: .1rem .15rem;
+  color: var(--muted);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: .68rem;
+  text-decoration: underline;
+  text-underline-offset: .2rem;
+}
+
+.utility-button:hover { color: var(--ink); border-color: transparent; background: transparent; }
 
 .sr-only {
   position: absolute;
@@ -336,6 +366,15 @@ input {
 #guess { width: 100%; font-size: 1.7rem; font-weight: 650; }
 #unit { margin-left: .65rem; color: var(--muted); font-size: .9rem; font-weight: 700; }
 
+.field-error {
+  margin: .45rem 0 0;
+  color: var(--bad);
+  font-size: .76rem;
+  font-weight: 650;
+}
+
+.guess-field:has(input[aria-invalid="true"]) { border-color: var(--bad); }
+
 button, .button-link {
   min-height: 3.25rem;
   padding: .72rem 1.15rem;
@@ -539,6 +578,70 @@ footer {
   opacity: .55;
   white-space: nowrap;
 }
+
+.data-notes {
+  margin-top: 2.5rem;
+  color: var(--muted);
+  font-size: .72rem;
+}
+
+.data-notes summary {
+  width: fit-content;
+  cursor: pointer;
+  color: var(--muted);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: .2rem;
+}
+
+.data-notes div { max-width: 38rem; padding-top: .35rem; }
+.data-notes p { margin: .4rem 0 0; }
+
+dialog {
+  width: min(calc(100% - 2rem), 34rem);
+  max-height: min(88dvh, 46rem);
+  padding: 0;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--paper-raised);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, .28);
+}
+
+dialog::backdrop { background: rgba(8, 17, 14, .72); backdrop-filter: blur(3px); }
+
+.how-to-content {
+  position: relative;
+  display: block;
+  padding: clamp(1.5rem, 6vw, 2.4rem);
+}
+
+.how-to-content h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 8vw, 3rem);
+  line-height: 1;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  min-height: 0;
+  padding: .25rem;
+  color: var(--muted);
+  border: 0;
+  background: transparent;
+  font-size: .7rem;
+  text-decoration: underline;
+}
+
+.dialog-close:hover { color: var(--ink); border-color: transparent; background: transparent; }
+.how-to-modes { display: grid; gap: .55rem; margin: 1.25rem 0; }
+.how-to-modes p { margin: 0; padding: .7rem .8rem; border-left: 3px solid var(--ocean); background: var(--paper); }
+.how-to-modes strong, .how-to-modes span { display: block; }
+.how-to-modes strong { font-family: var(--font-display); font-size: 1rem; }
+.how-to-modes span { color: var(--muted); font-size: .78rem; }
+.how-to-note { color: var(--muted); font-size: .82rem; }
 
 a { color: inherit; text-underline-offset: .18em; }
 .text-link { color: var(--ocean); font-size: .78rem; font-weight: 750; text-decoration: none; }

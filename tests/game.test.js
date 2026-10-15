@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   loadCities, makeRng, makeScheduledGame, score, shareText,
-  toCanonicalUnit, toDisplayUnit, unitLabel,
+  toCanonicalUnit, toDisplayUnit, unitLabel, parseGuessInput,
 } from "../assets/js/algorithms.js";
 import {
   calculateStats, listDayStates, readDayState, storageKey, writeDayState,
@@ -42,6 +42,15 @@ test("city rows expose full country display labels while retaining stable labels
   assert.equal(city.label, "Paris, FR");
   assert.equal(city.countryName, "France");
   assert.equal(city.displayLabel, "Paris, France");
+});
+
+test("guess validation accepts elevation below sea level and rejects invalid distances", () => {
+  assert.deepEqual(parseGuessInput("1,234.5", "distance"), { value: 1234.5, error: null });
+  assert.equal(parseGuessInput("-12", "elevation").value, -12);
+  assert.match(parseGuessInput("-12", "coast").error, /cannot be negative/);
+  assert.match(parseGuessInput("", "distance").error, /Enter an estimate/);
+  assert.match(parseGuessInput("not a number", "distance").error, /Enter a number/);
+  assert.match(parseGuessInput("1,5", "distance").error, /Enter a number/);
 });
 
 test("scheduled rounds resolve city labels and calculate answers", () => {

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadCities, makeScheduledGame } from "../assets/js/algorithms.js";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -41,4 +42,15 @@ test("displayed app version matches package.json", () => {
   const packageJson = JSON.parse(readFileSync(resolve(projectRoot, "package.json"), "utf8"));
   const page = readFileSync(resolve(projectRoot, "index.html"), "utf8");
   assert.match(page, new RegExp(`>v${packageJson.version.replaceAll(".", "\\.")}<`));
+});
+
+test("every curated schedule resolves to five playable rounds", () => {
+  const cityRows = JSON.parse(readFileSync(resolve(projectRoot, "data/cities.json"), "utf8"));
+  const schedule = JSON.parse(readFileSync(resolve(projectRoot, "data/schedule.json"), "utf8"));
+  const cities = loadCities(cityRows);
+  for (const [date, edition] of Object.entries(schedule.days)) {
+    const rounds = makeScheduledGame(cities, edition.rounds);
+    assert.equal(rounds.length, 5, `${date} should contain five rounds`);
+    assert.ok(rounds.every((round) => Number.isFinite(round.answer)), `${date} has an invalid answer`);
+  }
 });

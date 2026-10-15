@@ -1,6 +1,33 @@
 {
   "version": 1,
   "days": {
+    "2026-10-01": {
+      "rounds": [
+        {
+          "mode": "distance",
+          "a": "Paris, FR",
+          "b": "Tokyo, JP"
+        },
+        {
+          "mode": "coast",
+          "city": "Chicago, IL"
+        },
+        {
+          "mode": "distance",
+          "a": "Sydney, AU",
+          "b": "Cape Town, ZA"
+        },
+        {
+          "mode": "elevation",
+          "city": "Denver, CO"
+        },
+        {
+          "mode": "distance",
+          "a": "New York City, NY",
+          "b": "London, GB"
+        }
+      ]
+    },
     "2026-10-15": {
       "rounds": [
         {
