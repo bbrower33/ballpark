@@ -16,7 +16,7 @@ Open `http://localhost:8000/`. The schedule editor is available locally at
 ## Project structure
 
 ```text
-assets/       Browser JavaScript, CSS, and bundled fonts
+assets/       Browser JavaScript, CSS, bundled fonts, and brand images
 data/         Deployable city data and curated daily schedule
 docs/         Authoring guide and visual style bible
 scripts/      Offline data preprocessing tools

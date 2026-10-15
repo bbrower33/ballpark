@@ -44,6 +44,14 @@ test("displayed app version matches package.json", () => {
   assert.match(page, new RegExp(`>v${packageJson.version.replaceAll(".", "\\.")}<`));
 });
 
+test("the public page has deploy-ready identity metadata", () => {
+  const page = readFileSync(resolve(projectRoot, "index.html"), "utf8");
+  assert.match(page, /rel="canonical" href="https:\/\/brianbrower\.me\/ballpark\/"/);
+  assert.match(page, /rel="icon" href="assets\/images\/ballpark-icon\.png"/);
+  assert.match(page, /property="og:image" content="https:\/\/brianbrower\.me\/ballpark\/assets\/images\/ballpark-icon\.png"/);
+  assert.match(page, /name="twitter:card" content="summary"/);
+});
+
 test("every curated schedule resolves to five playable rounds", () => {
   const cityRows = JSON.parse(readFileSync(resolve(projectRoot, "data/cities.json"), "utf8"));
   const schedule = JSON.parse(readFileSync(resolve(projectRoot, "data/schedule.json"), "utf8"));
