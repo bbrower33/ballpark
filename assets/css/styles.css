@@ -81,6 +81,9 @@ html.round-active {
   scroll-padding-block: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-bottom));
 }
 
+/* Let the visual viewport move freely while a phone keyboard is open. */
+html.round-active.keyboard-active { scroll-snap-type: none; }
+
 body {
   min-height: 100vh;
   margin: 0;

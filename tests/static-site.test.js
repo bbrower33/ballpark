@@ -52,6 +52,16 @@ test("the public page has deploy-ready identity metadata", () => {
   assert.match(page, /name="twitter:card" content="summary"/);
 });
 
+test("the guess field responds to the mobile visual viewport", () => {
+  const page = readFileSync(resolve(projectRoot, "index.html"), "utf8");
+  const script = readFileSync(resolve(projectRoot, "assets/js/index.js"), "utf8");
+  const styles = readFileSync(resolve(projectRoot, "assets/css/styles.css"), "utf8");
+  assert.match(page, /index\.js\?v=20261015-1/);
+  assert.match(script, /visualViewport\?\.addEventListener\("resize", scheduleGuessVisibility\)/);
+  assert.match(script, /classList\.add\("keyboard-active"\)/);
+  assert.match(styles, /html\.round-active\.keyboard-active \{ scroll-snap-type: none; \}/);
+});
+
 test("every curated schedule resolves to five playable rounds", () => {
   const cityRows = JSON.parse(readFileSync(resolve(projectRoot, "data/cities.json"), "utf8"));
   const schedule = JSON.parse(readFileSync(resolve(projectRoot, "data/schedule.json"), "utf8"));

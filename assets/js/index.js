@@ -152,6 +152,33 @@ function centerRoundPanel() {
   });
 }
 
+let guessVisibilityTimer;
+
+function revealGuessAboveKeyboard() {
+  if (document.activeElement !== $("guess")) return;
+
+  const control = document.querySelector(".guess-control");
+  const viewport = window.visualViewport;
+  const viewportTop = viewport?.offsetTop ?? 0;
+  const viewportBottom = viewportTop + (viewport?.height ?? window.innerHeight);
+  const margin = 16;
+  const bounds = control.getBoundingClientRect();
+
+  if (bounds.bottom > viewportBottom - margin) {
+    window.scrollBy({ top: bounds.bottom - viewportBottom + margin, behavior: "auto" });
+  } else if (bounds.top < viewportTop + margin) {
+    window.scrollBy({ top: bounds.top - viewportTop - margin, behavior: "auto" });
+  }
+}
+
+function scheduleGuessVisibility() {
+  if (document.activeElement !== $("guess")) return;
+  document.documentElement.classList.add("keyboard-active");
+  window.clearTimeout(guessVisibilityTimer);
+  requestAnimationFrame(revealGuessAboveKeyboard);
+  guessVisibilityTimer = window.setTimeout(revealGuessAboveKeyboard, 250);
+}
+
 function formatMeasurement(value, mode) {
   return `${fmt(toDisplayUnit(value, mode, unitSystem))} ${unitLabel(mode, unitSystem)}`;
 }
@@ -238,6 +265,12 @@ $("guess-form").addEventListener("submit", (event) => {
 });
 
 $("guess").addEventListener("input", clearGuessError);
+$("guess").addEventListener("focus", scheduleGuessVisibility);
+$("guess").addEventListener("blur", () => {
+  window.clearTimeout(guessVisibilityTimer);
+  document.documentElement.classList.remove("keyboard-active");
+});
+window.visualViewport?.addEventListener("resize", scheduleGuessVisibility);
 
 $("next").addEventListener("click", () => {
   i++;
